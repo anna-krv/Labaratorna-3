@@ -22,11 +22,10 @@
     <ClInclude Include="VoronoiDiagram.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DCEL.cpp" />
-    <ClCompile Include="BeachSearchTree.cpp" />
+    <ClCompile Include="BeachLine.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FortuneAlgorithm.cpp" />
-    <ClCompile Include="slowAlgorithm.cpp" />
+    <ClCompile Include="naiveAlgorithm.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

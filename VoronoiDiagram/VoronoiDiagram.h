@@ -2,175 +2,117 @@
 
 #pragma once
 #include <E:\2\SFML-2.5.0\include\SFML\Graphics.hpp>
-#include <E:\2\SFML-2.5.0\include\SFML\Main.hpp>
 #include <iostream>
-#include <deque>
+#include <queue>
 #include <vector>
-#include <list>
-#include <memory>
 #include <string>
 using namespace std;
 
-//************For Fortune Algorithm*************
+//number of points
+const int maxNum = 9;
+extern sf::RenderWindow window;
+//window's size
+extern double wSize, hSize;
 
-class Parabola;
+//************Fortune Algorithm*************
 
-const float INF = FLT_MAX;
-const sf::Vector2f infPoint=sf::Vector2f(INF, INF);
+class Event;
+class Arch;
+class Segment;
+class VoronoiDiagram;
 
-//for Fortune Animation
-extern vector<vector<sf::Vertex>> animationFortune;
-extern vector<vector<sf::CircleShape>> animationPointsFortune;
-extern vector<sf::Vertex> tmpGoodFortune;
-extern vector<sf::CircleShape> tmpGoodPointsFortune;
-extern vector<vector<Parabola>> parabolas;
-extern vector<Parabola> tmpParabolas;
-
-class Parabola{
-private:
-	const static int accuracy = 80;
-	vector<sf::Vertex> vertexes;
-	sf::Vector2f focus;
-	double y;
+class Event {
 public:
-	Parabola(sf::Vector2f focus_, double y_) {
-		focus.x = focus_.x;
-		focus.y = focus_.y;
-		y = y_;
-		float wsize = 490.;
-		float  step = wsize / accuracy;
-		float  x = focus.x - step*(accuracy / 2.);
-		for (int i = 0; i < accuracy; i++) {
-			float yNew = (x*x - 2. * x*focus.x + focus.x*focus.x + focus.y*focus.y - y*y) / 2. / (focus.y - y);
-			if (yNew<=480. && yNew>=0.)
-				vertexes.push_back(sf::Vertex(sf::Vector2f(x, yNew), sf::Color::Black));
-			x += step;
-		}
-	}
-	void draw();
+	Event(double y_, sf::Vector2f point_, Arch* myArch_);
+	double getY() const;
+	sf::Vector2f point;
+	Arch* myArch;
+	bool valid;
+private:
+	double y;
 };
+
+//Greater Than
+struct gt {
+	bool operator()(sf::Vector2f v1, sf::Vector2f v2) {
+		return (v1.y > v2.y) || (v1.y == v2.y && v1.x > v2.x);
+	}
+	bool operator()(Event *e1, Event* e2) {
+		return e1->getY() > e2->getY();
+	}
+};
+
+class VoronoiDiagram {
+public:
+	VoronoiDiagram(sf::CircleShape myPoints[], int nElem);
+	//Fortune algorithm
+	void FortuneBuildDiagram();
+private:
+	//first item in the beachline
+	Arch *root;
+	priority_queue<sf::Vector2f, vector<sf::Vector2f>, gt> siteEvents;
+	priority_queue<Event*, vector<Event*>, gt> circleEvents;
+	//looks for a new circle event for Arch a
+	//at y-coordinate>y0
+	void checkCircleEvent(Arch* a, double y0);
+	void processSite();
+	void processCircle();
+	void beachLineInsert(sf::Vector2f v);
+	void finishEdges();
+};
+
+
+class Arch {
+public:
+	Arch(sf::Vector2f focus_, Arch* prev_ = nullptr, Arch* next_ = nullptr);
+	sf::Vector2f focus;
+	Arch *prev, *next;
+	Event* e;
+	Segment *s0, *s1;
+	double xBreak; //the right break for arch 
+	vector<sf::Vertex> buildVertexes();
+	double y; //the directrissa of arch
+private:
+	const static int accuracy = 800;
+};
+
 
 //models a segment that connects 2 points
 class Segment {
 public:
-	Segment() {}
-	Segment(sf::Vector2f p1_,
-		sf::Vector2f p2_) :p1(p1_), p2(p2_) {	}
-	sf::Vector2f p1, p2;
-};
-
-
-class EdgeNode {
-public:
-	EdgeNode();
-	EdgeNode(const sf::Vector2f& p1_,
-		const sf::Vector2f& site_);
-	EdgeNode(const sf::Vector2f& p1_,
-		const sf::Vector2f& p2_, const sf::Vector2f& site_);
-	void finish(const sf::Vector2f& p2_);
-protected:
-	Segment edge;
-	shared_ptr<EdgeNode> twin;
-	shared_ptr<sf::Vector2f> site;
-	bool finished;
-};
-
-//Double-Connected Edge List
-class DCEL {
-public:
-	DCEL();
-	void addEdge(const EdgeNode& newEdge);
+	Segment(sf::Vector2f start_);
+	void finish(sf::Vector2f end_);
+	vector<sf::Vertex> buildSeg(sf::Vector2f end_);
+	//when finished
+	vector<sf::Vertex> build();
 private:
-	list<EdgeNode> edges;
+	bool finished = false;
+	sf::Vector2f start, end;
 };
 
+const float INF = FLT_MAX;
+
+//helpful functions for Fortune's algorithm
+pair<double, double> intersection(sf::Vector2f v1, sf::Vector2f v2, double y);
+bool intersect(sf::Vector2f v, Arch* a);
+bool circle(sf::Vector2f a, sf::Vector2f b, sf::Vector2f c, double* y, sf::Vector2f* o);
+//pre: first is on the left, second is on the right
+//pre: first->prev->xBreak is already calculated
+double xCoordIntersection(Arch* first, Arch* second, double y);
+
+//for Fortune Animation
+void updateAnimation(Arch* root, double y);
+extern vector<vector<sf::Vertex>> sweepLine;
+extern vector<sf::CircleShape> pointsFortune;
+extern vector<vector<vector<sf::Vertex>>> FortuneBeachLine;
+extern vector<Segment*> FortuneFinishedEdges;
+extern vector<vector<vector<sf::Vertex>>> FortuneEdges;
+
+vector <vector<sf::Vertex>> saveCurFortuneFinishedEdges();
+vector < vector<sf::Vertex> > saveCurFortuneBeachLine(Arch* root, double y);
 
 
-class Event {
-public:
-	Event(const sf::Vector2f& v);
-	bool operator<(const Event& other) const;
-	void handle();
-	virtual sf::Vector2f getPointOfEvent() const;
-protected:
-	sf::Vector2f pointOfEvent;
-};
-
-class pointEvent :public Event {
-public:
-	pointEvent(const sf::Vector2f& site);
-};
-
-class circleEvent : public Event {
-public:
-	circleEvent(const sf::Vector2f& newVoronoiVertex);
-};
-
-class Arch {
-public:
-	Arch();
-	Arch(const pointEvent& focus_);
-	float x() const;
-	float y() const;
-	bool operator==(const Arch& other) const;
-	bool operator!=(const Arch& other) const;
-private:
-	shared_ptr<sf::Vector2f> focus;
-	shared_ptr<EdgeNode> leftEdge, rightEdge;
-};
-
-class BeachSearchTree;
-
-class BeachNode {
-public:
-	BeachNode();
-	BeachNode(const Arch& arch);
-	BeachNode(const sf::Vector2f breakPoint);
-private:
-	shared_ptr<Arch> arch;
-	sf::Vector2f breakpoint;
-	shared_ptr<BeachNode> parent;
-	shared_ptr<BeachNode> left;
-	shared_ptr<BeachNode> right;
-	shared_ptr<EdgeNode> edge;
-	shared_ptr<circleEvent> myCircleEvent;
-	friend class BeachSearchTree;
-};
-
-class BeachSearchTree {
-public:
-	BeachSearchTree();
-	BeachSearchTree(const shared_ptr<BeachNode>& beachNode);
-	void addArch(const Arch& myArch);
-	void deleteArch(const Arch& myArch);
-	shared_ptr<BeachNode> getLeftmostLeaf() const;
-	shared_ptr<BeachNode> getNextLeaf() const;
-	void handlePointEvent(const pointEvent& myPointEvent,
-		deque<Event> eventsQueue, DCEL& edges);
-	void handleCircleEvent(const circleEvent& myCircleEvent,
-		deque<Event> eventsQueue, DCEL& edges);
-private:
-	shared_ptr<BeachNode> root;
-	//returns BeachNode that corresponds to an arch 
-	//that is above myX coordinate
-	shared_ptr<BeachNode> searchPlaceForArch(double myX) const;
-	shared_ptr<BeachNode> searchArch(const Arch& myArch) const;
-};
-
-
-
-//Fortune algorithm
-vector<sf::ConvexShape> FortuneBuildDiagram(sf::CircleShape myPoints[], int nElem);
-
-
-
-//************For Slow Algorithm**************
-
-//number of points
-const int maxNum = 6;
-extern sf::RenderWindow window;
-//window's size
-extern double wSize, hSize;
+//************Naive Algorithm**************
 
 //for Animation
 extern vector<vector<sf::ConvexShape>> animation;
@@ -218,5 +160,5 @@ vector<vector<double>> myVec(sf::Color col, int i,
 
 sf::ConvexShape findConvex(int i, const sf::CircleShape myPoints[], int nElem);
 
-//slow algorithm
+//naive algorithm
 vector<sf::ConvexShape> buildDiagram(const sf::CircleShape myPoints[], int nElem);

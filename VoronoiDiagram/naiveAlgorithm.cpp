@@ -1,21 +1,15 @@
 //Made by Anna Kravets, K-22
 #include "VoronoiDiagram.h"
 #include <E:\2\SFML-2.5.0\include\SFML\Graphics.hpp>
-//#include <E:\2\SFML-2.5.0\include\SFML\Main.hpp>
 #include <iostream>
 #include <cmath>
 #include <vector>
 using namespace std;
 
-double wSize = 490., hSize = 480;
+double wSize = 590., hSize = 480;
 sf::RenderWindow window(sf::VideoMode(wSize, hSize), "Enjoy Geometry!");
 double scale[2] = { 4., 1.5 };
 int iScale = 0;
-
-void Parabola::draw() {
-	if (!vertexes.empty())
-		window.draw(&vertexes[0], vertexes.size(), sf::LineStrip);
-}
 
 vector<vector<sf::ConvexShape>> animation = {};
 vector<vector<sf::CircleShape>> animationPoints = {};
@@ -26,9 +20,9 @@ vector<sf::CircleShape> tmpGoodPoints = {};
 void fill(sf::CircleShape myPoints[], int nElem) {
 	srand(time(NULL));
 	for (int i = 0; i < nElem; i++) {
-		myPoints[i].setRadius(3);
-		myPoints[i].setOrigin(3, 3);
-		myPoints[i].setPosition(rand() % (int)wSize, rand() % (int)hSize);
+		myPoints[i].setRadius(2.5);
+		myPoints[i].setOrigin(2.5, 2.5);
+		myPoints[i].setPosition(rand() % (int)(wSize), rand() % (int)(hSize));
 		myPoints[i].setFillColor(sf::Color::Black);
 		//Animation
 		tmpGoodPoints.push_back(myPoints[i]);

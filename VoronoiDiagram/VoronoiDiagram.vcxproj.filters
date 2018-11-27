@@ -20,19 +20,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="slowAlgorithm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FortuneAlgorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BeachSearchTree.cpp">
+    <ClCompile Include="BeachLine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DCEL.cpp">
+    <ClCompile Include="naiveAlgorithm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

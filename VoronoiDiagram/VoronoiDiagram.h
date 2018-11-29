@@ -9,7 +9,7 @@
 using namespace std;
 
 //number of points
-const int maxNum = 9;
+const int maxNum = 20;
 extern sf::RenderWindow window;
 //window's size
 extern double wSize, hSize;
@@ -73,7 +73,7 @@ public:
 	vector<sf::Vertex> buildVertexes();
 	double y; //the directrissa of arch
 private:
-	const static int accuracy = 800;
+	const static int accuracy = 1000;
 };
 
 
@@ -81,6 +81,7 @@ private:
 class Segment {
 public:
 	Segment(sf::Vector2f start_);
+	Segment(sf::Vector2f start_, sf::Vector2f end_);
 	void finish(sf::Vector2f end_);
 	vector<sf::Vertex> buildSeg(sf::Vector2f end_);
 	//when finished
@@ -103,7 +104,7 @@ double xCoordIntersection(Arch* first, Arch* second, double y);
 //for Fortune Animation
 void updateAnimation(Arch* root, double y);
 extern vector<vector<sf::Vertex>> sweepLine;
-extern vector<sf::CircleShape> pointsFortune;
+extern vector<sf::CircleShape> points;
 extern vector<vector<vector<sf::Vertex>>> FortuneBeachLine;
 extern vector<Segment*> FortuneFinishedEdges;
 extern vector<vector<vector<sf::Vertex>>> FortuneEdges;

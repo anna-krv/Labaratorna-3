@@ -14,6 +14,9 @@ Segment::Segment(sf::Vector2f start_)
 
 }
 
+Segment::Segment(sf::Vector2f start_, sf::Vector2f end_)
+	:start(start_), end(end_) {}
+
 void Segment::finish(sf::Vector2f end_) {
 	if (!finished) {
 		end = end_;

@@ -10,7 +10,7 @@ using namespace std;
 
 //for Fortune Animation
 vector<vector<sf::Vertex>> sweepLine = {};
-vector<sf::CircleShape> pointsFortune = {};
+vector<sf::CircleShape> points = {};
 vector<vector<vector<sf::Vertex>>> FortuneBeachLine = {};
 vector<vector<vector<sf::Vertex>>> FortuneEdges = {};
 vector<Segment*> FortuneFinishedEdges = {};
@@ -171,7 +171,6 @@ priority_queue<sf::Vector2f, vector<sf::Vector2f>, gt> createQueue(sf::CircleSha
 	mySort(myPoints, nElem);
 	for (int i = 0; i < nElem; i++) {
 		eventsQueue.push(myPoints[i].getPosition());
-		pointsFortune.push_back(myPoints[i]);
 	}
 	return eventsQueue;
 }

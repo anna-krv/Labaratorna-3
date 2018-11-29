@@ -17,15 +17,27 @@ vector<sf::ConvexShape> tmpGood = {};
 vector<sf::CircleShape> tmpGoodPoints = {};
 
 
+//TODO: debug Fortune Algo with points
+/*
+if (i == 0)
+myPoints[i].setPosition(30, 20);
+else if (i==1)
+myPoints[i].setPosition(480, 60);
+else if(i==2)
+myPoints[i].setPosition(250, 230);
+*/
+
+
 void fill(sf::CircleShape myPoints[], int nElem) {
 	srand(time(NULL));
 	for (int i = 0; i < nElem; i++) {
-		myPoints[i].setRadius(2.5);
-		myPoints[i].setOrigin(2.5, 2.5);
-		myPoints[i].setPosition(rand() % (int)(wSize), rand() % (int)(hSize));
+		myPoints[i].setRadius(2);
+		myPoints[i].setOrigin(2, 2);
+		myPoints[i].setPosition(wSize/8+rand() % (int)(wSize*3/4), hSize/8+rand() % (int)(hSize*3/4));
 		myPoints[i].setFillColor(sf::Color::Black);
 		//Animation
 		tmpGoodPoints.push_back(myPoints[i]);
+		points.push_back(myPoints[i]);
 	}
 }
 

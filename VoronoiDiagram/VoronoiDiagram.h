@@ -9,7 +9,7 @@
 using namespace std;
 
 //number of points
-const int maxNum = 20;
+const int maxNum = 30;
 extern sf::RenderWindow window;
 //window's size
 extern double wSize, hSize;

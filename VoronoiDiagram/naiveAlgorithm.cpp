@@ -6,7 +6,7 @@
 #include <vector>
 using namespace std;
 
-double wSize = 590., hSize = 480;
+double wSize = 650., hSize = 480;
 sf::RenderWindow window(sf::VideoMode(wSize, hSize), "Enjoy Geometry!");
 double scale[2] = { 4., 1.5 };
 int iScale = 0;
@@ -17,23 +17,21 @@ vector<sf::ConvexShape> tmpGood = {};
 vector<sf::CircleShape> tmpGoodPoints = {};
 
 
-//TODO: debug Fortune Algo with points
-/*
-if (i == 0)
-myPoints[i].setPosition(30, 20);
-else if (i==1)
-myPoints[i].setPosition(480, 60);
-else if(i==2)
-myPoints[i].setPosition(250, 230);
-*/
-
 
 void fill(sf::CircleShape myPoints[], int nElem) {
 	srand(time(NULL));
 	for (int i = 0; i < nElem; i++) {
 		myPoints[i].setRadius(2);
 		myPoints[i].setOrigin(2, 2);
-		myPoints[i].setPosition(wSize/8+rand() % (int)(wSize*3/4), hSize/8+rand() % (int)(hSize*3/4));
+		//if (i == 0)
+		//	myPoints[i].setPosition(30, 20);
+		//else if (i == 1)
+		//	myPoints[i].setPosition(480, 60);
+		//else if (i == 2)
+		//	myPoints[i].setPosition(250, 230);
+		//else 
+			myPoints[i].setPosition(wSize/6+rand() % (int)(wSize*2/3), 
+				hSize/6+rand() % (int)(hSize*2/3.));
 		myPoints[i].setFillColor(sf::Color::Black);
 		//Animation
 		tmpGoodPoints.push_back(myPoints[i]);
